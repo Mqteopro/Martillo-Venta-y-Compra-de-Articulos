@@ -1,0 +1,469 @@
+<!-- file: index.html -->
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Martillo Venta y Compra de productos</title>
+    <style>
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #87ceeb; /* Azul cielo */
+        color: #333;
+        margin: 0;
+        padding: 20px;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 100 100"><rect width="100" height="100" fill="%2387CEEB"/><path d="M50 10 L60 20 L50 30 L40 20 Z" fill="%234a4e69"/><rect x="45" y="30" width="10" height="50" fill="%234a4e69"/></svg>');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 300px;
+      }
+      h1 {
+        color: #4a4e69;
+        text-align: center;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        font-family: 'Comic Sans MS', cursive, sans-serif;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      input,
+      textarea,
+      select,
+      button {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      button {
+        background-color: #4a4e69;
+        color: #fff;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #3b3e5b;
+      }
+      .item {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        background-color: #f9f9f9;
+      }
+      .chat {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-top: 20px;
+        border-radius: 4px;
+        background-color: #f9f9f9;
+      }
+      .hidden {
+        display: none;
+      }
+      .admin-section {
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #e0e0e0;
+        border-radius: 4px;
+      }
+      .secret {
+        position: absolute;
+        top: -1000px;
+        left: -1000px;
+      }
+      .user-circle {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        width: 40px;
+        height: 40px;
+        background-color: #4a4e69;
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8em;
+      }
+      .cart {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        width: 50px;
+        height: 50px;
+        background-color: #4a4e69;
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2em;
+        cursor: pointer;
+      }
+      .cart-items {
+        position: fixed;
+        bottom: 70px;
+        right: 10px;
+        width: 300px;
+        max-height: 300px;
+        overflow-y: auto;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Martillo Venta y Compra de productos</h1>
+
+      <!-- Círculo de usuario -->
+      <div class="user-circle hidden" id="userCircle"></div>
+
+      <!-- Sección para poner artículos a la venta -->
+      <div id="editSection">
+        <h2>Poner artículo a la venta</h2>
+        <input
+          type="text"
+          id="itemName"
+          placeholder="Nombre del artículo"
+        /><br />
+        <textarea
+          id="itemDescription"
+          placeholder="Descripción del artículo"
+        ></textarea
+        ><br />
+        <input type="file" id="itemImage" /><br />
+        <input
+          type="number"
+          id="itemPrice"
+          placeholder="Precio del artículo"
+        /><br />
+        <select id="itemQuality">
+          <option value="">Selecciona la calidad</option>
+          <option value="Nuevo">Nuevo</option>
+          <option value="Usado - Como nuevo">Usado - Como nuevo</option>
+          <option value="Usado - Buen estado">Usado - Buen estado</option>
+          <option value="Usado - Aceptable">Usado - Aceptable</option></select
+        ><br />
+        <button onclick="addItem()">Poner a la venta</button>
+      </div>
+
+      <!-- Sección de registro -->
+      <div class="register" id="registerSection">
+        <h2>Registrarse</h2>
+        <input type="text" id="registerName" placeholder="Nombre" />
+        <input
+          type="email"
+          id="registerEmail"
+          placeholder="Correo electrónico"
+        />
+        <input type="number" id="registerAge" placeholder="Edad" />
+        <input type="password" id="registerPassword" placeholder="Contraseña" />
+        <button onclick="registerUser()">Registrar</button>
+      </div>
+
+      <!-- Sección de inicio de sesión -->
+      <div class="login" id="loginSection">
+        <h2>Iniciar sesión</h2>
+        <input type="text" id="loginName" placeholder="Nombre" />
+        <input type="email" id="loginEmail" placeholder="Correo electrónico" />
+        <input type="password" id="loginPassword" placeholder="Contraseña" />
+        <button onclick="loginUser()">Iniciar sesión</button>
+      </div>
+
+      <!-- Sección de búsqueda -->
+      <div class="search">
+        <h2>Buscar artículos</h2>
+        <input type="text" id="searchQuery" placeholder="Buscar..." />
+        <button onclick="searchItems()">Buscar</button>
+      </div>
+
+      <div class="item-list" id="itemList">
+        <h2>Artículos en venta</h2>
+        <!-- Aquí se mostrarán los artículos -->
+      </div>
+
+      <div class="chat hidden" id="chatSection">
+        <h2>Chat con el vendedor</h2>
+        <div id="chatMessages"></div>
+        <button onclick="endChat()">Terminar Chat</button>
+        <input type="text" id="chatInput" placeholder="Escribe un mensaje..." />
+        <button onclick="sendMessage()">Enviar</button>
+      </div>
+
+      <!-- Sección de administrador -->
+      <div class="admin-section hidden" id="adminSection">
+        <h2>Panel de Administrador</h2>
+        <div id="adminItems"></div>
+      </div>
+
+      <!-- Sección para ingresar contraseña de administrador (oculta) -->
+      <div class="secret" id="adminPasswordSection">
+        <input
+          type="password"
+          id="adminPassword"
+          placeholder="Contraseña de administrador"
+        />
+        <button onclick="checkAdminPassword()">Ingresar</button>
+      </div>
+
+      <!-- Carrito de compras -->
+      <div class="cart" onclick="toggleCart()">🛒</div>
+      <div class="cart-items" id="cartItems">
+        <h3>Carrito de Compras</h3>
+        <div id="cartList"></div>
+        <strong>Total: $<span id="cartTotal">0.00</span></strong
+        ><br />
+        <button onclick="checkout()">Comprar</button>
+      </div>
+    </div>
+
+    <script>
+      const adminPassword = '357159258';
+      let users = [];
+      let currentUser = null;
+      let items = [];
+      let cart = [];
+      let currentChat = null;
+
+      function addItem() {
+        if (!currentUser) {
+          alert('Por favor, inicia sesión para agregar artículos.');
+          return;
+        }
+
+        const itemName = document.getElementById('itemName').value;
+        const itemDescription =
+          document.getElementById('itemDescription').value;
+        const itemImage = document.getElementById('itemImage').files[0];
+        const itemPrice = parseFloat(
+          document.getElementById('itemPrice').value
+        );
+        const itemQuality = document.getElementById('itemQuality').value;
+
+        if (
+          itemName.trim() === '' ||
+          !itemImage ||
+          isNaN(itemPrice) ||
+          itemQuality === ''
+        ) {
+          alert('Por favor, completa todos los campos.');
+          return;
+        }
+
+        const item = {
+          name: itemName,
+          description: itemDescription,
+          image: URL.createObjectURL(itemImage),
+          price: itemPrice,
+          quality: itemQuality,
+          seller: currentUser.name,
+        };
+
+        items.push(item);
+        displayItems();
+        clearItemForm();
+      }
+
+      function displayItems() {
+        const itemList = document.getElementById('itemList');
+        itemList.innerHTML = '';
+        items.forEach((item, index) => {
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'item';
+          itemDiv.innerHTML = `
+                    <strong>${item.name}</strong><br>
+                    <em>${item.description}</em><br>
+                    <span>Precio: $${item.price.toFixed(2)}</span><br>
+                    <span>Calidad: ${item.quality}</span><br>
+                    <span>Vendedor: ${item.seller}</span><br>
+                    <button onclick="addToCart(${index})">Añadir al carrito</button>
+                    <button onclick="viewImage('${
+                      item.image
+                    }')">Ver Imagen</button>
+                `;
+          itemList.appendChild(itemDiv);
+        });
+      }
+
+      function clearItemForm() {
+        document.getElementById('itemName').value = '';
+        document.getElementById('itemDescription').value = '';
+        document.getElementById('itemImage').value = '';
+        document.getElementById('itemPrice').value = '';
+        document.getElementById('itemQuality').value = '';
+      }
+
+      function addToCart(index) {
+        const item = items[index];
+        cart.push(item);
+        updateCart();
+      }
+
+      function updateCart() {
+        const cartList = document.getElementById('cartList');
+        const cartTotal = document.getElementById('cartTotal');
+        cartList.innerHTML = '';
+        let total = 0;
+        cart.forEach((item, index) => {
+          total += item.price;
+          const cartItem = document.createElement('div');
+          cartItem.innerHTML = `
+                    ${item.name} - $${item.price.toFixed(2)}
+                `;
+          cartList.appendChild(cartItem);
+        });
+        cartTotal.textContent = total.toFixed(2);
+      }
+
+      function toggleCart() {
+        const cartItems = document.getElementById('cartItems');
+        cartItems.style.display =
+          cartItems.style.display === 'none' ? 'block' : 'none';
+      }
+
+      function checkout() {
+        if (cart.length === 0) {
+          alert('El carrito está vacío.');
+          return;
+        }
+        cart.forEach((item) => {
+          startChat(item.seller);
+        });
+        cart = [];
+        updateCart();
+      }
+
+      function startChat(seller) {
+        currentChat = seller;
+        document.getElementById('chatSection').classList.remove('hidden');
+        document.getElementById(
+          'chatMessages'
+        ).innerHTML = `<p>Chat con ${seller}</p>`;
+      }
+
+      function sendMessage() {
+        const message = document.getElementById('chatInput').value;
+        if (message.trim() !== '') {
+          const chatMessages = document.getElementById('chatMessages');
+          chatMessages.innerHTML += `<p>${currentUser.name}: ${message}</p>`;
+          document.getElementById('chatInput').value = '';
+        }
+      }
+
+      function endChat() {
+        document.getElementById('chatSection').classList.add('hidden');
+        document.getElementById('chatMessages').innerHTML = '';
+      }
+
+      function viewImage(imageUrl) {
+        const imageWindow = window.open('', '_blank');
+        imageWindow.document.write(
+          `<img src="${imageUrl}" alt="Imagen del artículo" style="max-width:100%;">`
+        );
+      }
+
+      function registerUser() {
+        const name = document.getElementById('registerName').value;
+        const email = document.getElementById('registerEmail').value;
+        const age = document.getElementById('registerAge').value;
+        const password = document.getElementById('registerPassword').value;
+
+        if (users.some((user) => user.name === name)) {
+          alert('Este nombre ya está registrado. Por favor, elige otro.');
+          return;
+        }
+
+        if (name && email && age && password) {
+          const newUser = { name, email, password };
+          users.push(newUser);
+          currentUser = newUser;
+          alert('Registro exitoso.');
+          updateUIAfterLogin();
+        } else {
+          alert('Por favor, completa todos los campos.');
+        }
+      }
+
+      function loginUser() {
+        const name = document.getElementById('loginName').value;
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+
+        const user = users.find(
+          (user) =>
+            user.name === name &&
+            user.email === email &&
+            user.password === password
+        );
+        if (user) {
+          currentUser = user;
+          alert('Inicio de sesión exitoso.');
+          updateUIAfterLogin();
+        } else {
+          alert('Datos incorrectos.');
+        }
+      }
+
+      function updateUIAfterLogin() {
+        document.getElementById('registerSection').classList.add('hidden');
+        document.getElementById('loginSection').classList.add('hidden');
+        const userCircle = document.getElementById('userCircle');
+        userCircle.textContent = currentUser.name.charAt(0).toUpperCase();
+        userCircle.classList.remove('hidden');
+      }
+
+      function searchItems() {
+        const query = document
+          .getElementById('searchQuery')
+          .value.toLowerCase();
+        const items = document.querySelectorAll('.item');
+        items.forEach((item) => {
+          if (item.textContent.toLowerCase().includes(query)) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      }
+
+      function checkAdminPassword() {
+        const inputPassword = document.getElementById('adminPassword').value;
+        if (inputPassword === adminPassword) {
+          document.getElementById('adminSection').classList.remove('hidden');
+          displayAdminItems();
+        } else {
+          alert('Contraseña incorrecta.');
+        }
+      }
+
+      function displayAdminItems() {
+        const adminItems = document.getElementById('adminItems');
+        adminItems.innerHTML = '';
+        items.forEach((item) => {
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'item';
+          itemDiv.innerHTML = `
+                    <strong>${item.name}</strong><br>
+                    <em>${item.description}</em><br>
+                    <span>Precio: $${item.price.toFixed(2)}</span><br>
+                    <span>Calidad: ${item.quality}</span><br>
+                    <span>Vendedor: ${item.seller}</span>
+                `;
+          adminItems.appendChild(itemDiv);
+        });
+      }
+    </script>
+  </body>
+</html>
